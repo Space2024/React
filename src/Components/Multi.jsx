@@ -138,11 +138,11 @@ else
     setStep(step - 1);
   };
 
-  const [dateOfBirth, setDateOfBirth] = useState(null); // Initialize with null or any default date
-  const [weddingDate, setWeddingDate] = useState(null);
-  const [SpouseBirthday, setSpouseBirthday] = useState(null);
-  const [FirstChildBirthday, setFirstChildBirthday] = useState(null);
-  const [SecondChildBirthday, setSecondChildBirthday] = useState(null);
+  //const [dateOfBirth, setDateOfBirth] = useState(null)
+  // const [weddingDate, setWeddingDate] = useState(null);
+  // const [SpouseBirthday, setSpouseBirthday] = useState(null);
+  // const [FirstChildBirthday, setFirstChildBirthday] = useState(null);
+  // const [SecondChildBirthday, setSecondChildBirthday] = useState(null);
   const [isSuccess, setIsSuccess] = useState(false); // State variable to track success message
   // const [CHITwithSKTM, setCHITwithSKTM] = useState(false);
   const [MaritalStatus, setmaritalStatus] = useState(false); //
@@ -212,46 +212,87 @@ else
   }, [formData.CustomerType]);
 
 
-  const handledatechange = (date) => {
-    setDateOfBirth(date);
-    if (date) {
-      const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-      setFormData({ ...formData, dateOfBirth: formattedDate });
-    }
+  // const handledatechange = (date) => {
+  //   setDateOfBirth(date);
+  //   if (date) {
+  //     const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+  //     setFormData({ ...formData, dateOfBirth: formattedDate });
+  //   }
+  // };
+
+    // Function to handle date input change
+    const handleDateChange = (e) => {
+      const date = e.target.value;
+      setFormData({
+        ...formData,
+        dateOfBirth: date,
+      });
+    };
+  
+  // const handledate1change = (date) => {
+  //   setWeddingDate(date);
+  //   if (date) {
+  //     const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+  //     setFormData({ ...formData, weddingDate: formattedDate });
+  //   }
+  // };
+
+  const handleDate1Change = (e) => {
+    const date = e.target.value;
+    setFormData({
+      ...formData,
+      weddingDate: date,
+    });
   };
   
-  const handledate1change = (date) => {
-    setWeddingDate(date);
-    if (date) {
-      const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-      setFormData({ ...formData, weddingDate: formattedDate });
-    }
+  // const handledate2change = (date) => {
+  //   setSpouseBirthday(date);
+  //   if (date) {
+  //     const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+  //     setFormData({ ...formData, SpouseBirthday: formattedDate });
+  //   }
+  // };
+  
+  const handleDate2Change = (e) => {
+    const date = e.target.value;
+    setFormData({
+      ...formData,
+      SpouseBirthday: date,
+    });
+  };
+
+  // const handledate3change = (date) => {
+  //   setFirstChildBirthday(date);
+  //   if (date) {
+  //     const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+  //     setFormData({ ...formData, FirstChildBirthday: formattedDate });
+  //   }
+  // };
+
+  const handleDate3Change = (e) => {
+    const date = e.target.value;
+    setFormData({
+      ...formData,
+      FirstChildBirthday: date,
+    });
   };
   
-  const handledate2change = (date) => {
-    setSpouseBirthday(date);
-    if (date) {
-      const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-      setFormData({ ...formData, SpouseBirthday: formattedDate });
-    }
-  };
+  // const handledate4change = (date) => {
+  //   setSecondChildBirthday(date);
+  //   if (date) {
+  //     const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+  //     setFormData({ ...formData, SecondChildBirthday: formattedDate });
+  //   }
+  // };
   
-  const handledate3change = (date) => {
-    setFirstChildBirthday(date);
-    if (date) {
-      const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-      setFormData({ ...formData, FirstChildBirthday: formattedDate });
-    }
+  const handleDate4Change = (e) => {
+    const date = e.target.value;
+    setFormData({
+      ...formData,
+      SecondChildBirthday: date,
+    });
   };
-  
-  const handledate4change = (date) => {
-    setSecondChildBirthday(date);
-    if (date) {
-      const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-      setFormData({ ...formData, SecondChildBirthday: formattedDate });
-    }
-  };
-  
+
   const options = [
     { value: "single", label: "Single" },
     { value: "married", label: "Married" }
@@ -296,11 +337,11 @@ else
     }
 
     // Clear date pickers after successful submission
-    setDateOfBirth(null);
-    setWeddingDate(null);
-    setSpouseBirthday(null);
-    setFirstChildBirthday(null);
-    setSecondChildBirthday(null);
+    //setDateOfBirth(null);
+    // setWeddingDate(null);
+    // setSpouseBirthday(null);
+    // setFirstChildBirthday(null);
+    // setSecondChildBirthday(null);
     setState(null);
     setArea(null);
     setCity(null);
@@ -577,9 +618,10 @@ useEffect(() => {
                   <div className="md:col-span-1 flex flex-col">
                   <label htmlFor="dateOfBirth" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Date Of Birth</label>
                   <input
-                    selected={dateOfBirth}
                     type='date'
-                    onChange={handledatechange}
+                    id="dateOfBirth"
+                    value={formData.dateOfBirth}
+                    onChange={handleDateChange}
                     onKeyDown={(e) => handleKeypress(e, inputRef.mobileNo)} // Pass the reference to the next input field to handleKeypress function
                     ref={inputRef.dateOfBirth}
                     className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" 
@@ -807,8 +849,8 @@ useEffect(() => {
                   value={options.find(option => option.value === formData.MaritalStatus)}
                   isSearchable={false}
                   onChange={(selectedOption) => handleChange2(selectedOption)}
-                  onKeyDown={(e) => handleKeypress(e, inputRef.dateOfBirth)} // Pass the reference to the next input field to handleKeypress function
-                  ref={inputRef.email}
+                  onKeyDown={(e) => handleKeypress(e, inputRef.weddingDate)} // Pass the reference to the next input field to handleKeypress function
+                  ref={inputRef.MaritalStatus}
                   className="select-container h-10 border mt-1 rounded  px-0 w-full bg-gray-50 " // Add a custom class for styling
                   classNamePrefix="select" // Prefix for inner components' class names
                   />
@@ -818,18 +860,19 @@ useEffect(() => {
                   <div className="md:col-span-1 flex flex-col">
                   <label htmlFor="weddingDate" className="block text-left">Wedding Date</label>
                   {MaritalStatus ?(
-                  <DatePicker
-                    selected={weddingDate}
-                    onChange={handledate1change}
-                    onKeyDown={(e) => handleKeypress(e, inputRef.dateOfBirth)} // Pass the reference to the next input field to handleKeypress function
-                    ref={inputRef.email}
-                    dateFormat="dd/MM/yyyy" // Set the date format as "dd/mm/yyyy"
+                  <input
+                    type='date'
+                    id="weddingDate"
+                    value={formData.weddingDate}
+                    onChange={handleDate1Change}
+                    onKeyDown={(e) => handleKeypress(e, inputRef.SpouseName)} // Pass the reference to the next input field to handleKeypress function
+                    ref={inputRef.weddingDate}
                     className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                    placeholderText="Select Date" // Placeholder text when no date is selected
                     />):( 
                     <DatePicker
-                      selected={weddingDate}
-                      onChange={handledate1change}
+                      id="weddingDate"
+                      value={formData.weddingDate}
+                      onChange={handleDate1Change}
                       dateFormat="dd/MM/yyyy" // Set the date format as "dd/mm/yyyy"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-200 focus:outline-none
                       disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
@@ -849,8 +892,8 @@ useEffect(() => {
                       id="SpouseName"
                       value={formData.SpouseName}
                       onChange={handleChange}
-                      onKeyDown={(e) => handleKeypress(e, inputRef.dateOfBirth)} // Pass the reference to the next input field to handleKeypress function
-                      ref={inputRef.email}
+                      onKeyDown={(e) => handleKeypress(e, inputRef.SpouseBirthday)} // Pass the reference to the next input field to handleKeypress function
+                      ref={inputRef.SpouseName}
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"                                       
                     />):(
                     <input
@@ -870,18 +913,20 @@ useEffect(() => {
                   <div className="md:col-span-1 flex flex-col">
                   <label htmlFor="SpouseBirthday" className="block text-left">Spouse Birthday</label>
                   {MaritalStatus ?(
-                  <DatePicker
-                    selected={SpouseBirthday}
-                    onChange={(sod)=>handledate2change(sod)}
-                    onKeyDown={(e) => handleKeypress(e, inputRef.dateOfBirth)} // Pass the reference to the next input field to handleKeypress function
-                    ref={inputRef.email}
-                    dateFormat="dd/MM/yyyy" // Set the date format as "dd/mm/yyyy"
+                  <input
+                    type='date'
+                    id="spousebirthday"
+                    value={formData.SpouseBirthday}
+                    onChange={(sod)=>handleDate2Change(sod)}
+                    onKeyDown={(e) => handleKeypress(e, inputRef.FirstChildName)} // Pass the reference to the next input field to handleKeypress function
+                    ref={inputRef.SpouseBirthday}
                     className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                    placeholderText="Select Date" // Placeholder text when no date is selected
                     />):(
                     <DatePicker
-                      selected={SpouseBirthday}
-                      onChange={(sod)=>handledate2change(sod)}
+                    type='date'
+                    id="spousebirthday"
+                    value={formData.SpouseBirthday}
+                      onChange={(sod)=>handleDate2Change(sod)}
                       dateFormat="dd/MM/yyyy" // Set the date format as "dd/mm/yyyy"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-200 focus:outline-none
                       disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
@@ -901,8 +946,8 @@ useEffect(() => {
                       id="FirstChildName"
                       value={formData.FirstChildName}
                       onChange={handleChange}
-                      onKeyDown={(e) => handleKeypress(e, inputRef.dateOfBirth)} // Pass the reference to the next input field to handleKeypress function
-                      ref={inputRef.email}
+                      onKeyDown={(e) => handleKeypress(e, inputRef.FirstChildBirthday)} // Pass the reference to the next input field to handleKeypress function
+                      ref={inputRef.FirstChildName}
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                     />):(
                     <input
@@ -922,18 +967,20 @@ useEffect(() => {
                   <div className="md:col-span-1 flex flex-col">
                   <label htmlFor="FirstChildBirthday" className="block text-left">First Child Birthday</label>
                   {MaritalStatus ?(
-                  <DatePicker
-                    selected={FirstChildBirthday}
-                    onChange={handledate3change}
-                    onKeyDown={(e) => handleKeypress(e, inputRef.dateOfBirth)} // Pass the reference to the next input field to handleKeypress function
-                    ref={inputRef.email}
-                    dateFormat="dd/MM/yyyy" // Set the date format as "dd/mm/yyyy"
+                  <input
+                  type='date'
+                  id="firstChildBirthday"
+                  value={formData.FirstChildBirthday}
+                    onChange={handleDate3Change}
+                    onKeyDown={(e) => handleKeypress(e, inputRef.SecondChildName)} // Pass the reference to the next input field to handleKeypress function
+                    ref={inputRef.FirstChildBirthday}
                     className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                    placeholderText="Select Date" // Placeholder text when no date is selected
                     />):(
                     <DatePicker
-                      selected={FirstChildBirthday}
-                      onChange={handledate3change}
+                    type='date'
+                    id="firstChildBirthday"
+                    value={formData.FirstChildBirthday}
+                      onChange={handleDate3Change}
                       dateFormat="dd/MM/yyyy" // Set the date format as "dd/mm/yyyy"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-200 focus:outline-none
                       disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
@@ -953,8 +1000,8 @@ useEffect(() => {
                       id="SecondChildName"
                       value={formData.SecondChildName}
                       onChange={handleChange}
-                      onKeyDown={(e) => handleKeypress(e, inputRef.dateOfBirth)} // Pass the reference to the next input field to handleKeypress function
-                      ref={inputRef.email}
+                      onKeyDown={(e) => handleKeypress(e, inputRef.SecondChildBirthday)} // Pass the reference to the next input field to handleKeypress function
+                      ref={inputRef.SecondChildName}
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                     />):(
                     <input
@@ -974,18 +1021,20 @@ useEffect(() => {
                   <div className="md:col-span-1 flex flex-col">
                   <label htmlFor="SecondChildBirthday" className="block text-left">Second Child Birthday</label>
                   {MaritalStatus ?(
-                  <DatePicker
-                    selected={SecondChildBirthday}
-                    onChange={handledate4change}
-                    onKeyDown={(e) => handleKeypress(e, inputRef.dateOfBirth)} // Pass the reference to the next input field to handleKeypress function
-                    ref={inputRef.email}
-                    dateFormat="dd/MM/yyyy" // Set the date format as "dd/mm/yyyy"
+                  <input
+                  type='date'
+                  id="secondChildBirthday"
+                  value={formData.SecondChildBirthday}
+                    onChange={handleDate4Change}
+                    onKeyDown={(e) => handleKeypress(e, inputRef.FestivalCelebrate)} // Pass the reference to the next input field to handleKeypress function
+                    ref={inputRef.SecondChildBirthday}
                     className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                    placeholderText="Select Date" // Placeholder text when no date is selected
                     />):(
                     <DatePicker
-                      selected={SecondChildBirthday}
-                      onChange={handledate4change}
+                    type='date'
+                    id="secondChildBirthday"
+                    value={formData.SecondChildBirthday}
+                      onChange={handleDate4Change}
                       dateFormat="dd/MM/yyyy" // Set the date format as "dd/mm/yyyy"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-200 focus:outline-none
                       disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
@@ -1004,7 +1053,7 @@ useEffect(() => {
                   isSearchable={false}
                   onChange={(selectedOption) => handleChange({ target: { name: "FestivalCelebrate", value: selectedOption.value } })}
                   onKeyDown={(e) => handleKeypress(e, inputRef.dateOfBirth)} // Pass the reference to the next input field to handleKeypress function
-                  ref={inputRef.email}
+                  ref={inputRef.FestivalCelebrate}
                   className="select-container h-10 border mt-1 rounded  px-0 w-full bg-gray-50 " // Add a custom class for styling
                   classNamePrefix="select" // Prefix for inner components' class names
                   />
