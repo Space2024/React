@@ -623,30 +623,7 @@ useEffect(() => {
 
   {/* Checkboxes */}
       {/* Purchase checkbox */}
-      {formData.CustomerType==="NewCustomer"?(   <>
-      <label className="flex items-center">
-        <input 
-          type="checkbox" 
-          checked={purchaseChecked} // Set the checked state
-          onChange={handlePurchaseChange} // Handle the change event
-          className="form-checkbox h-5 w-5 text-green-500" // Customize checkbox appearance
-          disabled 
-        /> 
-        <span className="ml-2">Purchase With SKTM</span>
-      </label>
-
-      {/* Chit checkbox */}
-      <label className="flex items-center ">
-        <input 
-          type="checkbox" 
-          checked={chitChecked} // Set the checked state
-          onChange={handleChitChange} // Handle the change event
-          className="form-checkbox h-5 w-5 text-green-500 " // Customize checkbox appearance
-          disabled 
-        /> 
-        <span className="ml-2">Chit With SKTM</span>
-      </label>
-      </>):(
+      {formData.CustomerType === "NewCustomer" ? null : (
       <>
       <label className="flex items-center">
         <input 
