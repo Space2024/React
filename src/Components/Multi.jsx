@@ -202,6 +202,16 @@ else
   }, [])
 
   
+  // Update the checkbox state based on the selected CustomerType
+  useEffect(() => {
+    // Show the checkboxes if CustomerType is "ExistingCustomer"
+    if (formData.CustomerType === "ExistingCustomer") {
+      setPurchaseChecked(false); // Set the state of purchase checkbox
+      setChitChecked(false); // Set the state of chit checkbox
+    }
+  }, [formData.CustomerType]);
+
+
   const handledatechange = (date) => {
     setDateOfBirth(date);
     if (date) {
@@ -623,29 +633,29 @@ useEffect(() => {
 
   {/* Checkboxes */}
       {/* Purchase checkbox */}
-      {formData.CustomerType === "NewCustomer" ? null : (
-      <>
-      <label className="flex items-center">
-        <input 
-          type="checkbox" 
-          checked={purchaseChecked} // Set the checked state
-          onChange={handlePurchaseChange} // Handle the change event
-          className="form-checkbox h-5 w-5 text-green-500" // Customize checkbox appearance
-        /> 
-        <span className="ml-2">Purchase With SKTM</span>
-      </label>
+      {formData.CustomerType === "ExistingCustomer" && (
+        <>
+          <label className="flex items-center">
+            <input 
+              type="checkbox" 
+              checked={purchaseChecked}
+              onChange={handlePurchaseChange}
+              className="form-checkbox h-5 w-5 text-green-500"
+            /> 
+            <span className="ml-2">Purchase With SKTM</span>
+          </label>
 
-      {/* Chit checkbox */}
-      <label className="flex items-center ">
-        <input 
-          type="checkbox" 
-          checked={chitChecked} // Set the checked state
-          onChange={handleChitChange} // Handle the change event
-          className="form-checkbox h-5 w-5 text-green-500 " // Customize checkbox appearance
-        /> 
-        <span className="ml-2">Chit With SKTM</span>
-      </label>
-      </>
+          {/* Chit checkbox */}
+          <label className="flex items-center ">
+            <input 
+              type="checkbox" 
+              checked={chitChecked}
+              onChange={handleChitChange}
+              className="form-checkbox h-5 w-5 text-green-500 "
+            /> 
+            <span className="ml-2">Chit With SKTM</span>
+          </label>
+        </>
       )}
 
      {/* Hidden inputs to submit data */}
