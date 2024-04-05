@@ -320,7 +320,7 @@ else
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('https://localhost:8000/customer', formData);
+      const res = await axios.post('https://cust.spacetextiles.net/customer', formData);
       console.log(res.data);
       setIsSuccess(true);
 
@@ -455,7 +455,7 @@ else
 
   const handleVerify = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/verify_otp/${formData.otp}`);
+      const response = await axios.get(`https://cust.spacetextiles.net/verify_otp/${formData.otp}`);
     console.log(response)
       if (response.status === 200) {
         // OTP verification successful
