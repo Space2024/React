@@ -8,6 +8,9 @@ import QRCode from "react-qr-code";
 import logo from "../assets/logo.png"
 import logo1 from "../assets/logo1.png"
 
+const FORM_DATA_KEY = 'formData';
+const EXPIRY_TIME = 5 * 60 * 1000; // 1 hour in milliseconds
+
 const App = () => {
 
   const [step, setStep] = useState(1);
@@ -38,6 +41,7 @@ const App = () => {
     CustomerType:'',
     purchase_with_sktm:'No',
     chit_with_sktm:'No',
+    purchase_with_tcs:'No',
     enterotp:'',   
   });
 
@@ -99,6 +103,13 @@ const App = () => {
         //     isValid = false;
         //     setPanCard(true);
         //     break;
+          // Validate checkboxes if CustomerType is ExistingCustomer
+          case formData.CustomerType === 'ExistingCustomer' && !purchaseChecked && !chitChecked && !tcschecked:
+            isValid = false;
+            newErrors.field = 'Please select at least one option';
+            newErrors.field = 'Please select at least one option';
+            newErrors.field = 'Please select at least one option';
+            break;
         default:
             break;
     }
@@ -109,34 +120,53 @@ const App = () => {
     return isValid;
 };
 
-const handleNext = () => {
-    setErrors({});
-    setMobileNo(false);
-    setaadharNo(false);
-    setPanCard(false);
-    setPincode(false);
-    setEmailData(false)
+const handleNext = async () => { // Make the function async
+  setErrors({});
+  setMobileNo(false);
+  setaadharNo(false);
+  setPanCard(false);
+  setPincode(false);
+  setEmailData(false);
+  setCheck(false);
 
+  try {
+    // Check if fields are valid
     if (!validateFields()) {
-        // If fields are not valid, don't submit
-        return;
-        
-    }
-    
-else
-    if (step === 2 && !/^\d{6}$/.test(formData.pinCode)) {
-        // If on the first step and pincode is invalid, set error
-        setPincode(true)
-        return;
+      // If fields are not valid, don't submit
+      return;
     }
 
+    // Fetch existing user data
+    // const existingUser = await axios.get(`https://cust.spacetextiles.net/check_user/${formData.mobileNo}`);
+    // console.log(existingUser);
+
+    // Check pin code validity
+    if (step === 2 && !/^\d{6}$/.test(formData.pinCode)) {
+      // If on the second step and pincode is invalid, set error
+      setPincode(true);
+      return;
+    }
+
+    // If none of the above conditions are met, proceed to the next step
     setStep(step + 1);
+
+      // Save form data to local storage
+      saveFormData(formData);
+
+  } catch (error) {
+    console.error('Error checking user:', error);
+    // Handle any errors that occur during the submission process
+    setCheck(true);
+  }
 };
 
-
-  const handlePrev = () => {
-    setStep(step - 1);
-  };
+    
+    // For the handlePrev function, you can keep it unchanged
+    const handlePrev = () => {
+      setStep(step - 1);
+    };
+    
+    
 
   //const [dateOfBirth, setDateOfBirth] = useState(null)
   // const [weddingDate, setWeddingDate] = useState(null);
@@ -162,7 +192,11 @@ else
   const [qrmobile, setQRMobile] = useState(null);
   const [purchaseChecked, setPurchaseChecked] = useState(false);
   const [chitChecked, setChitChecked] = useState(false);
+  const [tcschecked, setTcsChecked] = useState(false);
   const [emailData,setEmailData]=useState(false);
+  const [check, setCheck] = useState(false);
+  const [mbno, setMBNo] = useState('');
+  const isFirstRun = useRef(true);
   const inputRef = {
     customerName:useRef(null),
     email: useRef(null),
@@ -211,6 +245,47 @@ else
     }
   }, [formData.CustomerType]);
 
+  useEffect(() => {
+    // Load form data from localStorage when component mounts
+    const storedFormData = JSON.parse(localStorage.getItem(FORM_DATA_KEY));
+    if (storedFormData) {
+      const { data, expiry } = storedFormData;
+      const now = new Date().getTime();
+      if (now <= expiry) {
+        // Data is still valid, set it in state
+        setFormData(data);
+      } else {
+        // Data has expired, clear it from localStorage
+        clearFormData();
+      }
+    }
+    isFirstRun.current = false;
+  }, []);
+
+
+  const saveFormData = (formData) => {
+    const now = new Date().getTime();
+    // Filter out fields you don't want to store
+    const filteredFormData = { 
+      ...formData,
+      purchase_with_sktm: purchaseChecked ? 'Yes' : 'No', // Set to 'Yes' if checked, 'No' if unchecked
+      chit_with_sktm: chitChecked ? 'Yes' : 'No',         // Set to 'Yes' if checked, 'No' if unchecked
+      purchase_with_tcs: tcschecked ? 'Yes' : 'No'        // Set to 'Yes' if checked, 'No' if unchecked
+      // Add other fields you want to exclude here
+  };
+  
+    const item = {
+        data: filteredFormData,
+        expiry: now + EXPIRY_TIME,
+    };
+    localStorage.setItem(FORM_DATA_KEY, JSON.stringify(item));
+};
+
+
+  const clearFormData = () => {
+    localStorage.removeItem(FORM_DATA_KEY);
+    setFormData({});
+  };
 
   // const handledatechange = (date) => {
   //   setDateOfBirth(date);
@@ -309,8 +384,7 @@ else
   // ];
 
   const options3 = [
-    { value: "Pongal/Sankrati", label: "Pongal/Sankrati" },
-    { value: "Diwali", label: "Diwali" },
+    { value: "Pongal/Diwali/Sankrati", label: "Pongal/Diwali/Sankrati" },
     { value: "Christmas", label: "Christmas" },
     { value: "RamadanEid", label: "Ramadan/Eid" },
     { value: "Onam", label: "Onam" },
@@ -320,9 +394,11 @@ else
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('https://cust.spacetextiles.net/customer', formData);
+      console.log(formData)
+      const res = await axios.post('http://localhost:3000/customer', formData);
       console.log(res.data);
       setIsSuccess(true);
+      setMBNo(res.data.mobileNo);
 
       if (res.status === 200) {
         setIsSuccess(true); // Set isSuccess to true if the request is successful
@@ -421,7 +497,7 @@ else
                 <div className="fixed inset-0 flex items-center justify-center z-10">
                     <div className="absolute inset-0 bg-gray-900 opacity-50"></div>
                     <div className="relative bg-white rounded-lg p-8 max-w-md">
-                    <h2 className="block text-left text-l font-semibold mb-4">Please Your Confirmation</h2>                       
+                    <h2 className="block text-left text-l font-semibold mb-4">Confirmation Code has been Sent to your Registered Mobile Number {mbno}</h2>                       
             <input
                 name='otp'
                 id='otp'
@@ -455,7 +531,7 @@ else
 
   const handleVerify = async () => {
     try {
-      const response = await axios.get(`https://cust.spacetextiles.net/verify_otp/${formData.otp}`);
+      const response = await axios.get(`http://localhost:3000/verify_otp/${formData.otp}`);
     console.log(response)
       if (response.status === 200) {
         // OTP verification successful
@@ -464,6 +540,7 @@ else
         console.log(formData)
         setShowPopup(true);
         setOtp(false);
+        clearFormData();
        // setTimeout(() => {
        // window.location.reload();
      // },5000);
@@ -519,6 +596,16 @@ const handleChitChange = () => {
  // Update the formData state with the corresponding value of purchase_with_sktm
  setFormData({ ...formData, chit_with_sktm: updatedchitChecked ? 'yes' : 'no' });
 };
+
+// Function to handle changes in the Chit checkbox
+const handletcsChange = () => {
+  // Toggle the state
+  const updatedtcsChecked = !tcschecked;
+  // Update the formData state with the new value of purchaseChecked
+  setTcsChecked(updatedtcsChecked);
+  // Update the formData state with the corresponding value of purchase_with_sktm
+  setFormData({ ...formData, purchase_with_tcs: updatedtcsChecked ? 'yes' : 'no' });
+ };
 
 const handleKeypress = (e, nextRef) => {
   if (e.key === 'Enter') {
@@ -697,12 +784,24 @@ useEffect(() => {
             /> 
             <span className="ml-2">Chit With SKTM</span>
           </label>
+
+           {/* TCS checkbox */}
+          <label className="flex items-center ">
+            <input 
+              type="checkbox" 
+              checked={tcschecked}
+              onChange={handletcsChange}
+              className="form-checkbox h-5 w-5 text-green-500 "
+            /> 
+            <span className="ml-2">Purchase With TCS</span>
+          </label>
         </>
       )}
 
      {/* Hidden inputs to submit data */}
     <input type="hidden" name="purchase_with_sktm" value={purchaseChecked ? 'yes' : 'no'} />
       <input type="hidden" name="chit_with_sktm" value={chitChecked ? 'yes' : 'no'} />
+      <input type="hidden" name="purchase_with_tcs" value={tcschecked ? 'yes' : 'no'} />
 
                   {/* <div className="md:col-span-1" > */}
                   {/* <label htmlFor="panCard" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">PAN Card</label> */}
@@ -732,6 +831,7 @@ useEffect(() => {
               {panCard && <div className="text-red-500 font-bold" style={{ fontSize: '12px' }}>PAN Card must have 5 letters followed by 4 numbers and 1 letter</div>}
               {aadharNo && <div className="text-red-500 font-bold" style={{ fontSize: '12px' }}>Aadhar No Must Be 12-digits</div>}
               {emailData && <div className="text-red-500 font-bold" style={{ fontSize: '12px' }}>Invalid Email</div>}
+              {check && <div className="text-blue-500 font-bold" style={{ fontSize: '12px' }}>This Mobile No is Already Registered</div>}
 
 {step === 2 && (
   <>
@@ -936,6 +1036,7 @@ useEffect(() => {
                       readOnly
                       />)}
                   </div>
+
 
                   <div className="md:col-span-1">
                     <label htmlFor="FirstChildName" className="block text-left">First Child Name</label>
