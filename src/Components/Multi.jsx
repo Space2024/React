@@ -137,8 +137,8 @@ const handleNext = async () => { // Make the function async
     }
 
     // Fetch existing user data
-    // const existingUser = await axios.get(`https://cust.spacetextiles.net/check_user/${formData.mobileNo}`);
-    // console.log(existingUser);
+     const existingUser = await axios.get(`https://cust.spacetextiles.net/check_user/${formData.mobileNo}`);
+     console.log(existingUser);
 
     // Check pin code validity
     if (step === 2 && !/^\d{6}$/.test(formData.pinCode)) {
@@ -395,7 +395,7 @@ const handleNext = async () => { // Make the function async
     e.preventDefault();
     try {
       console.log(formData)
-      const res = await axios.post('http://localhost:3000/customer', formData);
+      const res = await axios.post('https://cust.spacetextiles.net/customer', formData);
       console.log(res.data);
       setIsSuccess(true);
       setMBNo(res.data.mobileNo);
@@ -531,7 +531,7 @@ const handleNext = async () => { // Make the function async
 
   const handleVerify = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/verify_otp/${formData.otp}`);
+      const response = await axios.get(`https://cust.spacetextiles.net/verify_otp/${formData.otp}`);
     console.log(response)
       if (response.status === 200) {
         // OTP verification successful
