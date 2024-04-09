@@ -395,7 +395,7 @@ const handleNext = async () => { // Make the function async
     e.preventDefault();
     try {
       console.log(formData)
-      const res = await axios.post('http://localhost:3000/customer', formData);
+      const res = await axios.post(`http://localhost:3000/customer`, formData);
       console.log(res.data);
       setIsSuccess(true);
       setMBNo(res.data.mobileNo);
