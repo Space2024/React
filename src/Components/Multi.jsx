@@ -17,10 +17,8 @@ const App = () => {
   const [formData, setFormData] = useState({
     customerTitle: '',
     customerName: '',
-    lastName: '',
     email: '',
     ProfessionalType: '',
-    Professional: '',
     dateOfBirth: '',
     //GSTN: '',
     mobileNo: '',
@@ -193,10 +191,13 @@ const handleNext = async () => { // Make the function async
   const [scmchecked, setscmchecked] = useState(false);
   const [emailData,setEmailData]=useState(false);
   const [check, setCheck] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(false);
   const [mbno, setMBNo] = useState('');
   const inputRef = {
     customerName:useRef(null),
     email: useRef(null),
+    ProfessionalType: useRef(null),
+    Professional: useRef(null),
     dateOfBirth:useRef(null),
     mobileNo: useRef(null),
     doorNo: useRef(null),
@@ -262,6 +263,8 @@ const handleNext = async () => { // Make the function async
 
   const saveFormData = (formData) => {
     const now = new Date().getTime();
+    const existingFormData = JSON.parse(localStorage.getItem(FORM_DATA_KEY)) || { data: {}, expiry: 0 };
+  
     // Filter out fields you don't want to store
     const filteredFormData = { 
       ...formData,
@@ -271,12 +274,24 @@ const handleNext = async () => { // Make the function async
       scm_carments: scmchecked ? 'Yes' : 'No'            // Set to 'Yes' if checked, 'No' if unchecked
       // Add other fields you want to exclude here
     };
+  
+    // Merge with existing data and update only changed checkboxes
+    const updatedFormData = {
+      ...existingFormData.data,
+      ...filteredFormData,
+      purchase_with_sktm: existingFormData.data.purchase_with_sktm || filteredFormData.purchase_with_sktm,
+      chit_with_sktm: existingFormData.data.chit_with_sktm || filteredFormData.chit_with_sktm,
+      purchase_with_tcs: existingFormData.data.purchase_with_tcs || filteredFormData.purchase_with_tcs,
+      scm_carments: existingFormData.data.scm_carments || filteredFormData.scm_carments,
+    };
+  
     const item = {
-      data: filteredFormData,
+      data: updatedFormData,
       expiry: now + EXPIRY_TIME,
     };
     localStorage.setItem(FORM_DATA_KEY, JSON.stringify(item));
   };
+  
   
 
   const clearFormData = () => {
@@ -387,10 +402,10 @@ const handleNext = async () => { // Make the function async
     { value: "Onam", label: "Onam" },
   ];
 
-  const options4 = [
-    { value: "Govt", label: "Govt" },
-    { value: "Private", label: "Private" },
-  ];
+  // const options4 = [
+  //   { value: "Govt", label: "Govt" },
+  //   { value: "Private", label: "Private" },
+  // ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -498,7 +513,7 @@ const handleNext = async () => { // Make the function async
                 <div className="fixed inset-0 flex items-center justify-center z-10">
                     <div className="absolute inset-0 bg-gray-900 opacity-50"></div>
                     <div className="relative bg-white rounded-lg p-8 max-w-md">
-                    <h2 className="block text-left text-l font-semibold mb-4">Confirmation Code has been Sent to your Registered Mobile Number  {mbno}</h2>                       
+                    <h2 className="block text-left text-l font-semibold mb-4">Code has been Sent Registered Mobile No  {mbno}</h2>                       
             <input
                 name='otp'
                 id='otp'
@@ -584,6 +599,11 @@ const handleChange3 = (e, customerTitle) => {
   });
 };
 
+// const handleChange4 = (e, ProfessionalType) => {
+//   setFormData({ ...formData, [ProfessionalType]: e.target.value });
+// };
+
+
 function getCurrentDate() {
   const today = new Date();
   let month = (today.getMonth() + 1).toString();
@@ -606,39 +626,51 @@ const handlePurchaseChange = () => {
   // Update the formData state with the new value of purchaseChecked
   setPurchaseChecked(updatedPurchaseChecked);
   // Update the formData state with the corresponding value of purchase_with_sktm
-  setFormData({ ...formData, purchase_with_sktm: updatedPurchaseChecked ? 'yes' : 'no' });
+  const purchaseValue = updatedPurchaseChecked ? 'Yes' : 'No'; // Set to 'Yes' if checked, 'No' if unchecked
+  setFormData({ ...formData, purchase_with_sktm: purchaseValue });
 };
-
 
 // Function to handle changes in the Chit checkbox
 const handleChitChange = () => {
- // Toggle the state
- const updatedchitChecked = !chitChecked;
- // Update the formData state with the new value of purchaseChecked
- setChitChecked(updatedchitChecked);
- // Update the formData state with the corresponding value of purchase_with_sktm
- setFormData({ ...formData, chit_with_sktm: updatedchitChecked ? 'yes' : 'no' });
+  // Toggle the state
+  const updatedChitChecked = !chitChecked;
+  // Update the formData state with the new value of chitChecked
+  setChitChecked(updatedChitChecked);
+  // Update the formData state with the corresponding value of chit_with_sktm
+  const chitValue = updatedChitChecked ? 'Yes' : 'No'; // Set to 'Yes' if checked, 'No' if unchecked
+  setFormData({ ...formData, chit_with_sktm: chitValue });
 };
 
-// Function to handle changes in the Chit checkbox
+// Function to handle changes in the Tcs checkbox
 const handletcsChange = () => {
   // Toggle the state
-  const updatedtcsChecked = !tcschecked;
-  // Update the formData state with the new value of purchaseChecked
-  setTcsChecked(updatedtcsChecked);
-  // Update the formData state with the corresponding value of purchase_with_sktm
-  setFormData({ ...formData, purchase_with_tcs: updatedtcsChecked ? 'yes' : 'no' });
- };
+  const updatedTcsChecked = !tcschecked;
+  // Update the formData state with the new value of tcsChecked
+  setTcsChecked(updatedTcsChecked);
+  // Update the formData state with the corresponding value of purchase_with_tcs
+  const tcsValue = updatedTcsChecked ? 'Yes' : 'No'; // Set to 'Yes' if checked, 'No' if unchecked
+  setFormData({ ...formData, purchase_with_tcs: tcsValue });
+};
 
- // Function to handle changes in the Chit checkbox
+// Function to handle changes in the Scm checkbox
 const handlescmChange = () => {
   // Toggle the state
-  const updatedscmChecked = !scmchecked;
-  // Update the formData state with the new value of purchaseChecked
-  setscmchecked(updatedscmChecked);
-  // Update the formData state with the corresponding value of purchase_with_sktm
-  setFormData({ ...formData, scm_carments: updatedscmChecked ? 'yes' : 'no' });
- };
+  const updatedScmChecked = !scmchecked;
+  // Update the formData state with the new value of scmChecked
+  setscmchecked(updatedScmChecked);
+  // Update the formData state with the corresponding value of scm_carments
+  const scmValue = updatedScmChecked ? 'Yes' : 'No'; // Set to 'Yes' if checked, 'No' if unchecked
+  setFormData({ ...formData, scm_carments: scmValue });
+};
+
+// Function to handle changes in the radio buttons
+const handleOptionChange = (optionValue) => {
+  // Update the selectedOption state with the new value
+  setSelectedOption(optionValue);
+  // Update the formData state with the selected option value
+  setFormData({ ...formData, ProfessionalType: optionValue });
+};
+
 
 const handleKeypress = (e, nextRef) => {
   if (e.key === 'Enter') {
@@ -713,6 +745,7 @@ useEffect(() => {
       onChange={(e) => handleChange3(e, 'customerTitle')}
       className="h-10 border mt-1 rounded-l px-2 bg-gray-50"style={{ width: "60px" }}
     >
+      <option value=""> </option>
       <option value="Mr.">Mr.</option>
       <option value="Ms.">Ms.</option>
       <option value="Mrs.">Mrs.</option>
@@ -730,51 +763,7 @@ useEffect(() => {
               {errors.customerName && <div className="text-red-500">{errors.customerName}</div>}
               </div>
 
-                  <div className="md:col-span-2">
-                    <label htmlFor="email" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Email</label>
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      onKeyDown={(e) => handleKeypress(e, inputRef.dateOfBirth)} // Pass the reference to the next input field to handleKeypress function
-                      ref={inputRef.email}
-                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                    />
-                    {errors.email && <div className="text-red-500">{errors.email}</div>}
-                  </div>
-
-                  <div className="md:col-span-1">
-                  <label htmlFor="ProfessionalType" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Professional Type</label>
-                  <Select
-                  options={options4}
-                  value={options4.find(option => option.value === formData.ProfessionalType)}
-                  isSearchable={false}
-                  onChange={(selectedOption) => handleChange({ target: { name: "ProfessionalType", value: selectedOption.value } })}
-                  onKeyDown={(e) => handleKeypress(e, inputRef.Professional)} // Pass the reference to the next input field to handleKeypress function
-                  ref={inputRef.ProfessionalType}
-                  className="select-container h-10 border mt-1 rounded  px-0 w-full bg-gray-50 " // Add a custom class for styling
-                  classNamePrefix="select" // Prefix for inner components' class names
-                  />
-                  </div>
-
-                  <div className="md:col-span-1">
-                    <label htmlFor="Professional" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Professional</label>
-                    <input
-                      type="Professional"
-                      name="Professional"
-                      id="Professional"
-                      value={formData.Professional}
-                      onChange={handleChange}
-                      onKeyDown={(e) => handleKeypress(e, inputRef.dateOfBirth)} // Pass the reference to the next input field to handleKeypress function
-                      ref={inputRef.Professional}
-                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                    />
-                    {errors.email && <div className="text-red-500">{errors.email}</div>}
-                  </div>
-
-                  <div className="md:col-span-1 flex flex-col">
+              <div className="md:col-span-1 flex flex-col">
                   <label htmlFor="dateOfBirth" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Date Of Birth</label>
                   <input
                     type='date'
@@ -818,6 +807,80 @@ useEffect(() => {
                     />
                     {errors.mobileNo && <div className="text-red-500">{errors.mobileNo}</div>}
                   </div>
+
+                  <div className="md:col-span-2">
+                    <label htmlFor="email" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      id="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      onKeyDown={(e) => handleKeypress(e, inputRef.dateOfBirth)} // Pass the reference to the next input field to handleKeypress function
+                      ref={inputRef.email}
+                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                    />
+                    {errors.email && <div className="text-red-500">{errors.email}</div>}
+                  </div>
+
+  
+{/* Purchase radio button */}
+<label htmlFor="email" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">ProfessionalType</label>
+<div className="md:col-span-2"></div>
+<label className="flex items-center">
+  <input 
+    type="radio"
+    name="Govt"
+    value="Govt"  // Value corresponding to the "Govt" option
+    checked={selectedOption === 'Govt'}
+    onChange={() => handleOptionChange('Govt')}
+    className="form-radio h-5 w-5 text-green-500"
+  /> 
+  <span className="ml-2">Govt</span>
+</label>
+
+{/* Chit radio button */}
+<label className="flex items-center">
+  <input 
+    type="radio"
+    name="Private"
+    value="Private"  // Value corresponding to the "Private" option
+    checked={selectedOption === 'Private'}
+    onChange={() => handleOptionChange('Private')}
+    className="form-radio h-5 w-5 text-green-500"
+  /> 
+  <span className="ml-2">Private</span>
+</label>
+
+{/* TCS radio button */}
+<label className="flex items-center">
+  <input 
+    type="radio"
+    name="Business"
+    value="Business"  // Value corresponding to the "Business" option
+    checked={selectedOption === 'Business'}
+    onChange={() => handleOptionChange('Business')}
+    className="form-radio h-5 w-5 text-green-500"
+  /> 
+  <span className="ml-2">Business</span>
+</label>
+
+{/* SCM radio button */}
+<label className="flex items-center">
+  <input 
+    type="radio"
+    name="Others"
+    value="Others"  // Value corresponding to the "Others" option
+    checked={selectedOption === 'Others'}
+    onChange={() => handleOptionChange('Others')}
+    className="form-radio h-5 w-5 text-green-500"
+  /> 
+  <span className="ml-2">Others</span>
+</label>
+
+
+
+
 
                   <div className="md:col-span-2">
                   <label htmlFor="CustomerType" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Customer Type</label>
