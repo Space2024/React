@@ -19,7 +19,7 @@ const App = () => {
     customerName: '',
     lastName: '',
     email: '',
-    ProffessionalType: '',
+    ProfessionalType: '',
     Professional: '',
     dateOfBirth: '',
     //GSTN: '',
@@ -44,6 +44,7 @@ const App = () => {
     FestivalCelebrate:'',
     CustomerType:'',
     purchase_with_sktm:'No',
+    purchase_with_tcs:'No',
     chit_with_sktm:'No',
     scm_carments:'No',
     enterotp:'',   
@@ -395,7 +396,7 @@ const handleNext = async () => { // Make the function async
     e.preventDefault();
     try {
       console.log(formData)
-      const res = await axios.post(`https://cust.spacetextiles.net/customer`, formData);
+      const res = await axios.post('http://localhost:3000/customer', formData);
       console.log(res.data);
       setIsSuccess(true);
       setMBNo(res.data.mobileNo);
@@ -532,7 +533,7 @@ const handleNext = async () => { // Make the function async
 
   const handleVerify = async () => {
     try {
-      const response = await axios.get(`https://cust.spacetextiles.net/verify_otp/${formData.otp}`);
+      const response = await axios.get(`http://localhost:3000/verify_otp/${formData.otp}`);
     console.log(response)
       if (response.status === 200) {
         // OTP verification successful
@@ -745,14 +746,14 @@ useEffect(() => {
                   </div>
 
                   <div className="md:col-span-1">
-                  <label htmlFor="ProffessionalType" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Professional Type</label>
+                  <label htmlFor="ProfessionalType" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Professional Type</label>
                   <Select
                   options={options4}
-                  value={options4.find(option => option.value === formData.ProffessionalType)}
+                  value={options4.find(option => option.value === formData.ProfessionalType)}
                   isSearchable={false}
-                  onChange={(selectedOption) => handleChange({ target: { name: "ProffessionalType", value: selectedOption.value } })}
+                  onChange={(selectedOption) => handleChange({ target: { name: "ProfessionalType", value: selectedOption.value } })}
                   onKeyDown={(e) => handleKeypress(e, inputRef.Professional)} // Pass the reference to the next input field to handleKeypress function
-                  ref={inputRef.ProffessionalType}
+                  ref={inputRef.ProfessionalType}
                   className="select-container h-10 border mt-1 rounded  px-0 w-full bg-gray-50 " // Add a custom class for styling
                   classNamePrefix="select" // Prefix for inner components' class names
                   />
