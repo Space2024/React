@@ -15,10 +15,14 @@ const App = () => {
 
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
+    customerTitle: '',
     customerName: '',
+    lastName: '',
     email: '',
+    ProffessionalType: '',
+    Professional: '',
     dateOfBirth: '',
-    GSTN: '',
+    //GSTN: '',
     mobileNo: '',
     //panCard: '',
     //aadharNo: '',
@@ -41,7 +45,7 @@ const App = () => {
     CustomerType:'',
     purchase_with_sktm:'No',
     chit_with_sktm:'No',
-    purchase_with_tcs:'No',
+    scm_carments:'No',
     enterotp:'',   
   });
 
@@ -51,7 +55,7 @@ const App = () => {
     let updatedValue = value;
 
     // Check if the input field is one of the fields requiring capitalization
-    if (['customerName', 'street', 'spouseName', 'firstChildName', 'secondChildName'].includes(name)) {
+    if (['customerName','lastname', 'street', 'spouseName', 'firstChildName', 'secondChildName'].includes(name)) {
         // Capitalize the first letter of the input value
         updatedValue = value.charAt(0).toUpperCase() + value.slice(1);
     }
@@ -74,9 +78,9 @@ const App = () => {
 
     switch (true) {
         // Check if any of the required fields are empty
-        case fieldsToValidate.some((field) => !formData[field].trim()):
+        case fieldsToValidate.some((field) => !formData[field]):
             fieldsToValidate.forEach((field) => {
-                if (!formData[field].trim()) {
+                if (!formData[field]) {
                     isValid = false;
                     newErrors.field = 'All Field is Required';
                 }
@@ -103,13 +107,6 @@ const App = () => {
         //     isValid = false;
         //     setPanCard(true);
         //     break;
-          // Validate checkboxes if CustomerType is ExistingCustomer
-          case formData.CustomerType === 'ExistingCustomer' && !purchaseChecked && !chitChecked && !tcschecked:
-            isValid = false;
-            newErrors.field = 'Please select at least one option';
-            newErrors.field = 'Please select at least one option';
-            newErrors.field = 'Please select at least one option';
-            break;
         default:
             break;
     }
@@ -137,8 +134,8 @@ const handleNext = async () => { // Make the function async
     }
 
     // Fetch existing user data
-     const existingUser = await axios.get(`https://cust.spacetextiles.net/check_user/${formData.mobileNo}`);
-     console.log(existingUser);
+    // const existingUser = await axios.get(`https://cust.spacetextiles.net/check_user/${formData.mobileNo}`);
+    // console.log(existingUser);
 
     // Check pin code validity
     if (step === 2 && !/^\d{6}$/.test(formData.pinCode)) {
@@ -152,7 +149,6 @@ const handleNext = async () => { // Make the function async
 
       // Save form data to local storage
       saveFormData(formData);
-
   } catch (error) {
     console.error('Error checking user:', error);
     // Handle any errors that occur during the submission process
@@ -193,10 +189,10 @@ const handleNext = async () => { // Make the function async
   const [purchaseChecked, setPurchaseChecked] = useState(false);
   const [chitChecked, setChitChecked] = useState(false);
   const [tcschecked, setTcsChecked] = useState(false);
+  const [scmchecked, setscmchecked] = useState(false);
   const [emailData,setEmailData]=useState(false);
   const [check, setCheck] = useState(false);
   const [mbno, setMBNo] = useState('');
-  const isFirstRun = useRef(true);
   const inputRef = {
     customerName:useRef(null),
     email: useRef(null),
@@ -245,6 +241,7 @@ const handleNext = async () => { // Make the function async
     }
   }, [formData.CustomerType]);
 
+
   useEffect(() => {
     // Load form data from localStorage when component mounts
     const storedFormData = JSON.parse(localStorage.getItem(FORM_DATA_KEY));
@@ -259,7 +256,6 @@ const handleNext = async () => { // Make the function async
         clearFormData();
       }
     }
-    isFirstRun.current = false;
   }, []);
 
 
@@ -270,17 +266,17 @@ const handleNext = async () => { // Make the function async
       ...formData,
       purchase_with_sktm: purchaseChecked ? 'Yes' : 'No', // Set to 'Yes' if checked, 'No' if unchecked
       chit_with_sktm: chitChecked ? 'Yes' : 'No',         // Set to 'Yes' if checked, 'No' if unchecked
-      purchase_with_tcs: tcschecked ? 'Yes' : 'No'        // Set to 'Yes' if checked, 'No' if unchecked
+      purchase_with_tcs: tcschecked ? 'Yes' : 'No',      // Set to 'Yes' if checked, 'No' if unchecked
+      scm_carments: scmchecked ? 'Yes' : 'No'            // Set to 'Yes' if checked, 'No' if unchecked
       // Add other fields you want to exclude here
-  };
-  
+    };
     const item = {
-        data: filteredFormData,
-        expiry: now + EXPIRY_TIME,
+      data: filteredFormData,
+      expiry: now + EXPIRY_TIME,
     };
     localStorage.setItem(FORM_DATA_KEY, JSON.stringify(item));
-};
-
+  };
+  
 
   const clearFormData = () => {
     localStorage.removeItem(FORM_DATA_KEY);
@@ -384,18 +380,22 @@ const handleNext = async () => { // Make the function async
   // ];
 
   const options3 = [
-    { value: "Pongal/Diwali/Sankrati", label: "Pongal/Diwali/Sankrati" },
+    { value: "Pongal/Sankrati/Diwali", label: "Pongal/Sankrati/Diwali" },
     { value: "Christmas", label: "Christmas" },
     { value: "RamadanEid", label: "Ramadan/Eid" },
     { value: "Onam", label: "Onam" },
   ];
 
+  const options4 = [
+    { value: "Govt", label: "Govt" },
+    { value: "Private", label: "Private" },
+  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       console.log(formData)
-      const res = await axios.post('https://cust.spacetextiles.net/customer', formData);
+      const res = await axios.post('http://localhost:3000/customer', formData);
       console.log(res.data);
       setIsSuccess(true);
       setMBNo(res.data.mobileNo);
@@ -429,7 +429,7 @@ const handleNext = async () => { // Make the function async
         customerName: '',
         email: '',
         dateOfBirth: '',
-        GSTN: '',
+        //GSTN: '',
         mobileNo: '',
        // panCard: '',
        // aadharNo: '',
@@ -497,13 +497,14 @@ const handleNext = async () => { // Make the function async
                 <div className="fixed inset-0 flex items-center justify-center z-10">
                     <div className="absolute inset-0 bg-gray-900 opacity-50"></div>
                     <div className="relative bg-white rounded-lg p-8 max-w-md">
-                    <h2 className="block text-left text-l font-semibold mb-4">Confirmation Code has been Sent to your Registered Mobile Number {mbno}</h2>                       
+                    <h2 className="block text-left text-l font-semibold mb-4">Confirmation Code has been Sent to your Registered Mobile Number  {mbno}</h2>                       
             <input
                 name='otp'
                 id='otp'
                 type="text"
                 value={formData.enterotp}
                 onChange={handleChange}
+                maxLength={6}
                 placeholder="Referral Code..."
                 className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:border-blue-500"
             />
@@ -531,7 +532,7 @@ const handleNext = async () => { // Make the function async
 
   const handleVerify = async () => {
     try {
-      const response = await axios.get(`https://cust.spacetextiles.net/verify_otp/${formData.otp}`);
+      const response = await axios.get(`http://localhost:3000/verify_otp/${formData.otp}`);
     console.log(response)
       if (response.status === 200) {
         // OTP verification successful
@@ -540,7 +541,6 @@ const handleNext = async () => { // Make the function async
         console.log(formData)
         setShowPopup(true);
         setOtp(false);
-        clearFormData();
        // setTimeout(() => {
        // window.location.reload();
      // },5000);
@@ -576,6 +576,28 @@ else {
 }
 };
 
+const handleChange3 = (e, customerTitle) => {
+  setFormData({
+      ...formData,
+      [customerTitle]: e.target.value
+  });
+};
+
+function getCurrentDate() {
+  const today = new Date();
+  let month = (today.getMonth() + 1).toString();
+  let day = today.getDate().toString();
+  const year = today.getFullYear();
+  
+  if (month.length < 2) 
+    month = '0' + month;
+  if (day.length < 2) 
+    day = '0' + day;
+
+  return `${year}-${month}-${day}`;
+}
+
+
 // Function to handle changes in the Purchase checkbox
 const handlePurchaseChange = () => {
   // Toggle the state
@@ -605,6 +627,16 @@ const handletcsChange = () => {
   setTcsChecked(updatedtcsChecked);
   // Update the formData state with the corresponding value of purchase_with_sktm
   setFormData({ ...formData, purchase_with_tcs: updatedtcsChecked ? 'yes' : 'no' });
+ };
+
+ // Function to handle changes in the Chit checkbox
+const handlescmChange = () => {
+  // Toggle the state
+  const updatedscmChecked = !scmchecked;
+  // Update the formData state with the new value of purchaseChecked
+  setscmchecked(updatedscmChecked);
+  // Update the formData state with the corresponding value of purchase_with_sktm
+  setFormData({ ...formData, scm_carments: updatedscmChecked ? 'yes' : 'no' });
  };
 
 const handleKeypress = (e, nextRef) => {
@@ -672,18 +704,28 @@ useEffect(() => {
             <form onSubmit={handleSubmit}>
               {step === 1 && (
                 <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-2">
-              <div className="md:col-span-2">
-              <label htmlFor="customerName" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Customer Name</label>
-              <input
-              type="text"
-              name="customerName"
-              id="customerName"
-              value={formData.customerName}
-              onChange={handleChange}
-              onKeyDown={(e) => handleKeypress(e, inputRef.email)} // Pass the reference to the next input field to handleKeypress function
-              ref={inputRef.customerName}
-              className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-              />
+<div className="md:col-span-2">
+  <label htmlFor="customerName" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Customer Name</label>
+  <div className="flex">
+    <select
+      value={formData.customerTitle}
+      onChange={(e) => handleChange3(e, 'customerTitle')}
+      className="h-10 border mt-1 rounded-l px-2 bg-gray-50"style={{ width: "60px" }}
+    >
+      <option value="Mr.">Mr.</option>
+      <option value="Ms.">Ms.</option>
+      <option value="Mrs.">Mrs.</option>
+    </select>
+    <input
+      type="text"
+      name="customerName"
+      id="customerName"
+      value={formData.customerName}
+      onChange={(e) => handleChange(e, 'customerName')}
+      onKeyDown={(e) => handleKeypress(e, inputRef.email)} // Pass the reference to the next input field to handleKeypress function
+      ref={inputRef.customerName}
+      className="h-10 border mt-1 rounded-r px-2 w-full bg-gray-50"
+    /> </div>
               {errors.customerName && <div className="text-red-500">{errors.customerName}</div>}
               </div>
 
@@ -702,6 +744,35 @@ useEffect(() => {
                     {errors.email && <div className="text-red-500">{errors.email}</div>}
                   </div>
 
+                  <div className="md:col-span-1">
+                  <label htmlFor="ProffessionalType" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Professional Type</label>
+                  <Select
+                  options={options4}
+                  value={options4.find(option => option.value === formData.ProffessionalType)}
+                  isSearchable={false}
+                  onChange={(selectedOption) => handleChange({ target: { name: "ProffessionalType", value: selectedOption.value } })}
+                  onKeyDown={(e) => handleKeypress(e, inputRef.Professional)} // Pass the reference to the next input field to handleKeypress function
+                  ref={inputRef.ProffessionalType}
+                  className="select-container h-10 border mt-1 rounded  px-0 w-full bg-gray-50 " // Add a custom class for styling
+                  classNamePrefix="select" // Prefix for inner components' class names
+                  />
+                  </div>
+
+                  <div className="md:col-span-1">
+                    <label htmlFor="Professional" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Professional</label>
+                    <input
+                      type="Professional"
+                      name="Professional"
+                      id="Professional"
+                      value={formData.Professional}
+                      onChange={handleChange}
+                      onKeyDown={(e) => handleKeypress(e, inputRef.dateOfBirth)} // Pass the reference to the next input field to handleKeypress function
+                      ref={inputRef.Professional}
+                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                    />
+                    {errors.email && <div className="text-red-500">{errors.email}</div>}
+                  </div>
+
                   <div className="md:col-span-1 flex flex-col">
                   <label htmlFor="dateOfBirth" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Date Of Birth</label>
                   <input
@@ -709,6 +780,7 @@ useEffect(() => {
                     id="dateOfBirth"
                     value={formData.dateOfBirth}
                     onChange={handleDateChange}
+                    max={getCurrentDate()}
                     onKeyDown={(e) => handleKeypress(e, inputRef.mobileNo)} // Pass the reference to the next input field to handleKeypress function
                     ref={inputRef.dateOfBirth}
                     className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" 
@@ -785,8 +857,8 @@ useEffect(() => {
             <span className="ml-2">Chit With SKTM</span>
           </label>
 
-           {/* TCS checkbox */}
-          <label className="flex items-center ">
+                {/* TCS checkbox */}
+                <label className="flex items-center ">
             <input 
               type="checkbox" 
               checked={tcschecked}
@@ -795,6 +867,17 @@ useEffect(() => {
             /> 
             <span className="ml-2">Purchase With TCS</span>
           </label>
+
+              {/* SCM checkbox */}
+              <label className="flex items-center ">
+            <input 
+              type="checkbox" 
+              checked={scmchecked}
+              onChange={handlescmChange}
+              className="form-checkbox h-5 w-5 text-green-500 "
+            /> 
+            <span className="ml-2">SCM Carments</span>
+          </label>
         </>
       )}
 
@@ -802,6 +885,8 @@ useEffect(() => {
     <input type="hidden" name="purchase_with_sktm" value={purchaseChecked ? 'yes' : 'no'} />
       <input type="hidden" name="chit_with_sktm" value={chitChecked ? 'yes' : 'no'} />
       <input type="hidden" name="purchase_with_tcs" value={tcschecked ? 'yes' : 'no'} />
+      <input type="hidden" name="scm_carments" value={scmchecked ? 'yes' : 'no'} />
+
 
                   {/* <div className="md:col-span-1" > */}
                   {/* <label htmlFor="panCard" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">PAN Card</label> */}
@@ -943,7 +1028,7 @@ useEffect(() => {
                 {step === 3 && (
                   <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-2">
                   <div className="md:col-span-1">
-                  <label htmlFor="MaritalStatus" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Marital Status</label>
+                  <label htmlFor="MaritalStatus" className="block text-left after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Marital Status</label>
                   <Select
                   options={options}
                   value={options.find(option => option.value === formData.MaritalStatus)}
@@ -1147,7 +1232,7 @@ useEffect(() => {
                   </div>
 
                   <div className="md:col-span-1">
-                  <label htmlFor="FestivalCelebrate" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Festival Celebrate</label>
+                  <label htmlFor="FestivalCelebrate" className="block text-left after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Festival Celebrate</label>
                   <Select
                   options={options3}
                   value={options3.find(option => option.value === formData.FestivalCelebrate)}
