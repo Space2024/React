@@ -808,7 +808,6 @@ useEffect(() => {
                     {errors.mobileNo && <div className="text-red-500">{errors.mobileNo}</div>}
                   </div>
 
-
               <div className="md:col-span-1 flex flex-col">
                   <label htmlFor="dateOfBirth" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Date Of Birth</label>
                   <input
