@@ -52,21 +52,27 @@ const App = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     let updatedValue = value;
-
+  
     // Check if the input field is one of the fields requiring capitalization
-    if (['customerName','lastname', 'street', 'spouseName', 'firstChildName', 'secondChildName'].includes(name)) {
-        // Capitalize the first letter of the input value
-        updatedValue = value.charAt(0).toUpperCase() + value.slice(1);
+    if (['customerName', 'lastname', 'street', 'spouseName', 'firstChildName', 'secondChildName'].includes(name)) {
+      // Capitalize the first letter of the input value
+      updatedValue = value.charAt(0).toUpperCase() + value.slice(1);
     }
-
+  
     // Convert the input value to uppercase if it's the PAN card field
     const uppercaseValue = name === 'panCard' ? value.toUpperCase() : updatedValue;
+    
+    // Sanitize the value to allow only numbers if it's the mobileNo field
+    const sanitizedValue = name === 'mobileNo' ? value.replace(/[^0-9]/g, '') : uppercaseValue;
 
+  
+    // Update the form data
     setFormData({
-        ...formData,
-        [name]: uppercaseValue
+      ...formData,
+      [name]: sanitizedValue
     });
-};
+  };
+  
 
 
   const validateFields = () => {
@@ -772,7 +778,6 @@ useEffect(() => {
       <option value="Mr.">Mr.</option>
       <option value="Ms.">Ms.</option>
       <option value="Mrs.">Mrs.</option>
-      <option value="Mrs.">Dr.</option>
     </select>
     <input
       type="text"
@@ -901,10 +906,6 @@ useEffect(() => {
   /> 
   <span className="ml-2">Others</span>
 </label>
-
-
-
-
 
                   <div className="md:col-span-2">
                   <label htmlFor="CustomerType" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Customer Type</label>
