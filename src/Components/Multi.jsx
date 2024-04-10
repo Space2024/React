@@ -106,6 +106,15 @@ const App = () => {
         //     isValid = false;
         //     setPanCard(true);
         //     break;
+
+        case formData.CustomerType === 'ExistingCustomer' && !purchaseChecked && !chitChecked && !tcschecked && !scmchecked:
+          isValid = false;
+          newErrors.field = 'Please select at least one option';
+          newErrors.field = 'Please select at least one option';
+          newErrors.field = 'Please select at least one option';
+          newErrors.field = 'Please select at least one option';
+          break;
+
         default:
             break;
     }
@@ -274,15 +283,15 @@ const handleNext = async () => { // Make the function async
       scm_carments: scmchecked ? 'Yes' : 'No'            // Set to 'Yes' if checked, 'No' if unchecked
       // Add other fields you want to exclude here
     };
-  
+
     // Merge with existing data and update only changed checkboxes
     const updatedFormData = {
       ...existingFormData.data,
       ...filteredFormData,
-      purchase_with_sktm: existingFormData.data.purchase_with_sktm || filteredFormData.purchase_with_sktm,
-      chit_with_sktm: existingFormData.data.chit_with_sktm || filteredFormData.chit_with_sktm,
-      purchase_with_tcs: existingFormData.data.purchase_with_tcs || filteredFormData.purchase_with_tcs,
-      scm_carments: existingFormData.data.scm_carments || filteredFormData.scm_carments,
+      purchase_with_sktm: existingFormData.data.purchase_with_sktm,
+      chit_with_sktm: existingFormData.data.chit_with_sktm,
+      purchase_with_tcs: existingFormData.data.purchase_with_tcs,
+      scm_carments: existingFormData.data.scm_carments,
     };
   
     const item = {
@@ -291,13 +300,23 @@ const handleNext = async () => { // Make the function async
     };
     localStorage.setItem(FORM_DATA_KEY, JSON.stringify(item));
   };
-  
-  
 
   const clearFormData = () => {
     localStorage.removeItem(FORM_DATA_KEY);
     setFormData({});
   };
+  
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem('ProfessionalType'));
+    if (storedData && storedData.value) {
+      setSelectedOption(storedData.value);
+    }
+  }, []);
+
+  // Effect to store state in local storage
+  useEffect(() => {
+    localStorage.setItem('selectedOption', selectedOption);
+  }, [selectedOption]);
 
   // const handledatechange = (date) => {
   //   setDateOfBirth(date);
