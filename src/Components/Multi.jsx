@@ -772,6 +772,7 @@ useEffect(() => {
       <option value="Mr.">Mr.</option>
       <option value="Ms.">Ms.</option>
       <option value="Mrs.">Mrs.</option>
+      <option value="Mrs.">Dr.</option>
     </select>
     <input
       type="text"
@@ -963,7 +964,7 @@ useEffect(() => {
               onChange={handlescmChange}
               className="form-checkbox h-5 w-5 text-green-500 "
             /> 
-            <span className="ml-2">SCM Carments</span>
+            <span className="ml-2">SCM Garments</span>
           </label>
         </>
       )}
