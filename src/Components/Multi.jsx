@@ -447,6 +447,9 @@ const handleNext = async () => { // Make the function async
     //  },5000);
     }
 
+    // Clear local storage after submission
+    localStorage.clear();
+
     // Clear date pickers after successful submission
     //setDateOfBirth(null);
     // setWeddingDate(null);
