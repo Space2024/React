@@ -513,6 +513,7 @@ const handleNext = async () => { // Make the function async
         Previous
       </button>
     )}
+    <div style={{ display: 'flex', justifyContent: 'flex-end' }}></div>
     {step < 3 && (
       <button
         type="button"
