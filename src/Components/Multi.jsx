@@ -200,7 +200,7 @@ const handleNext = async () => { // Make the function async
   const [scmchecked, setscmchecked] = useState(false);
   const [emailData,setEmailData]=useState(false);
   const [check, setCheck] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(localStorage.getItem('selectedOption'));
   const [mbno, setMBNo] = useState('');
   const inputRef = {
     customerName:useRef(null),
