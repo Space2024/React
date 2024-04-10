@@ -792,6 +792,23 @@ useEffect(() => {
               {errors.customerName && <div className="text-red-500">{errors.customerName}</div>}
               </div>
 
+              <div className="md:col-span-1">
+                    <label htmlFor="mobileNo" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Mobile Number</label>
+                    <input
+                      type="text"
+                      name="mobileNo"
+                      id="mobileNo"
+                      value={formData.mobileNo}
+                      onChange={handleChange}
+                      onKeyDown={(e) => handleKeypress(e, inputRef.CustomerType)} // Pass the reference to the next input field to handleKeypress function
+                      ref={inputRef.mobileNo}
+                      maxLength={10}
+                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                    />
+                    {errors.mobileNo && <div className="text-red-500">{errors.mobileNo}</div>}
+                  </div>
+
+
               <div className="md:col-span-1 flex flex-col">
                   <label htmlFor="dateOfBirth" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Date Of Birth</label>
                   <input
@@ -820,22 +837,6 @@ useEffect(() => {
                     />
                     {errors.aadharNo && <div className="text-red-500">{errors.aadharNo}</div>}
                   </div> */}
-
-                  <div className="md:col-span-1">
-                    <label htmlFor="mobileNo" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Mobile Number</label>
-                    <input
-                      type="text"
-                      name="mobileNo"
-                      id="mobileNo"
-                      value={formData.mobileNo}
-                      onChange={handleChange}
-                      onKeyDown={(e) => handleKeypress(e, inputRef.CustomerType)} // Pass the reference to the next input field to handleKeypress function
-                      ref={inputRef.mobileNo}
-                      maxLength={10}
-                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                    />
-                    {errors.mobileNo && <div className="text-red-500">{errors.mobileNo}</div>}
-                  </div>
 
                   <div className="md:col-span-2">
                     <label htmlFor="email" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Email</label>
