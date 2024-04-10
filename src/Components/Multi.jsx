@@ -778,6 +778,8 @@ useEffect(() => {
       <option value="Mr.">Mr.</option>
       <option value="Ms.">Ms.</option>
       <option value="Mrs.">Mrs.</option>
+      <option value="Mrs.">Dr.</option>
+      <option value="Mrs.">Er.</option>
     </select>
     <input
       type="text"
