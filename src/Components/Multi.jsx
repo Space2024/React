@@ -79,7 +79,7 @@ const App = () => {
     let isValid = true;
     const newErrors = {};
 
-    const fieldsToValidate = ['customerName', 'email', 'dateOfBirth', 'mobileNo', 'CustomerType',];
+    const fieldsToValidate = ['customerName', 'email', 'dateOfBirth', 'mobileNo', 'CustomerType','customerTitle',];
 
     switch (true) {
         // Check if any of the required fields are empty
@@ -427,10 +427,16 @@ const handleNext = async () => { // Make the function async
     { value: "Onam", label: "Onam" },
   ];
 
-  // const options4 = [
-  //   { value: "Govt", label: "Govt" },
-  //   { value: "Private", label: "Private" },
-  // ];
+  const options4 = [
+    { value: "Govt", label: "Govt" },
+    { value: "Private", label: "Private" },
+    { value: "Doctor", label: "Doctor" },
+    { value: "Engineer", label: "Engineer" },
+    { value: "Lawyer", label: "Lawyer" },
+    { value: "Business", label: "Business" },
+    { value: "Farmer", label: "Farmer" },
+    { value: "Others", label: "Others" },
+  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -693,12 +699,12 @@ const handlescmChange = () => {
 };
 
 // Function to handle changes in the radio buttons
-const handleOptionChange = (optionValue) => {
-  // Update the selectedOption state with the new value
-  setSelectedOption(optionValue);
-  // Update the formData state with the selected option value
-  setFormData({ ...formData, ProfessionalType: optionValue });
-};
+// const handleOptionChange = (optionValue) => {
+//   // Update the selectedOption state with the new value
+//   setSelectedOption(optionValue);
+//   // Update the formData state with the selected option value
+//   setFormData({ ...formData, ProfessionalType: optionValue });
+// };
 
 
 const handleKeypress = (e, nextRef) => {
@@ -778,8 +784,6 @@ useEffect(() => {
       <option value="Mr.">Mr.</option>
       <option value="Ms.">Ms.</option>
       <option value="Mrs.">Mrs.</option>
-      <option value="Mrs.">Dr.</option>
-      <option value="Mrs.">Er.</option>
     </select>
     <input
       type="text"
@@ -855,59 +859,19 @@ useEffect(() => {
                   </div>
 
   
-{/* Purchase radio button */}
-<label htmlFor="email" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">ProfessionalType</label>
-<div className="md:col-span-2"></div>
-<label className="flex items-center">
-  <input 
-    type="radio"
-    name="Govt"
-    value="Govt"  // Value corresponding to the "Govt" option
-    checked={selectedOption === 'Govt'}
-    onChange={() => handleOptionChange('Govt')}
-    className="form-radio h-5 w-5 text-green-500"
-  /> 
-  <span className="ml-2">Govt</span>
-</label>
-
-{/* Chit radio button */}
-<label className="flex items-center">
-  <input 
-    type="radio"
-    name="Private"
-    value="Private"  // Value corresponding to the "Private" option
-    checked={selectedOption === 'Private'}
-    onChange={() => handleOptionChange('Private')}
-    className="form-radio h-5 w-5 text-green-500"
-  /> 
-  <span className="ml-2">Private</span>
-</label>
-
-{/* TCS radio button */}
-<label className="flex items-center">
-  <input 
-    type="radio"
-    name="Business"
-    value="Business"  // Value corresponding to the "Business" option
-    checked={selectedOption === 'Business'}
-    onChange={() => handleOptionChange('Business')}
-    className="form-radio h-5 w-5 text-green-500"
-  /> 
-  <span className="ml-2">Business</span>
-</label>
-
-{/* SCM radio button */}
-<label className="flex items-center">
-  <input 
-    type="radio"
-    name="Others"
-    value="Others"  // Value corresponding to the "Others" option
-    checked={selectedOption === 'Others'}
-    onChange={() => handleOptionChange('Others')}
-    className="form-radio h-5 w-5 text-green-500"
-  /> 
-  <span className="ml-2">Others</span>
-</label>
+                  <div className="md:col-span-1">
+                  <label htmlFor="Professional Type" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Professional</label>
+                  <Select
+                  options={options4}
+                  value={options4.find(option => option.value === formData.FestivalCelebrate)}
+                  isSearchable={false}
+                  onChange={(selectedOption) => handleChange({ target: { name: "FestivalCelebrate", value: selectedOption.value } })}
+                  onKeyDown={(e) => handleKeypress(e, inputRef.dateOfBirth)} // Pass the reference to the next input field to handleKeypress function
+                  ref={inputRef.FestivalCelebrate}
+                  className="select-container h-10 border mt-1 rounded  px-0 w-full bg-gray-50 " // Add a custom class for styling
+                  classNamePrefix="select" // Prefix for inner components' class names
+                  />
+                  </div>
 
                   <div className="md:col-span-2">
                   <label htmlFor="CustomerType" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Customer Type</label>
