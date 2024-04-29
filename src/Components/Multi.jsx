@@ -428,13 +428,14 @@ const handleNext = async () => { // Make the function async
   ];
 
   const options4 = [
-    { value: "Govt", label: "Govt" },
-    { value: "Private", label: "Private" },
+    { value: "Architects", label: "Architects" },
+    { value: "Marketing careers", label: "Marketing careers" },
     { value: "Doctor", label: "Doctor" },
     { value: "Engineer", label: "Engineer" },
     { value: "Lawyer", label: "Lawyer" },
     { value: "Business", label: "Business" },
-    { value: "Farmer", label: "Farmer" },
+    { value: "Agriculture", label: "Agriculture" },
+    { value: "Teacher/Proffessor", label: "Teacher/Proffessor" },
     { value: "Others", label: "Others" },
   ];
 
