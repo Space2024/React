@@ -859,7 +859,7 @@ useEffect(() => {
                   </div>
 
   
-                  <div className="md:col-span-1">
+                  <div className="md:col-span-2">
                   <label htmlFor="Professional Type" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Professional</label>
                   <Select
                   options={options4}
