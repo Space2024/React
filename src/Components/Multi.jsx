@@ -18,10 +18,10 @@ const App = () => {
     customerTitle: '',
     customerName: '',
     email: '',
-    ProfessionalType: '',
     dateOfBirth: '',
-    //GSTN: '',
+    GSTN: '',
     mobileNo: '',
+    Professional:'',
     //panCard: '',
     //aadharNo: '',
     doorNo: '',
@@ -42,8 +42,8 @@ const App = () => {
     FestivalCelebrate:'',
     CustomerType:'',
     purchase_with_sktm:'No',
-    purchase_with_tcs:'No',
     chit_with_sktm:'No',
+    purchase_with_tcs:'No',
     scm_carments:'No',
     enterotp:'',   
   });
@@ -72,64 +72,64 @@ const App = () => {
       [name]: sanitizedValue
     });
   };
-  
 
 
-  const validateFields = () => {
-    let isValid = true;
-    const newErrors = {};
+const validateFields = () => {
+  let isValid = true;
+  const newErrors = {};
 
-    const fieldsToValidate = ['customerName', 'email', 'dateOfBirth', 'mobileNo', 'CustomerType','customerTitle',];
+  const fieldsToValidate = ['customerName', 'email', 'dateOfBirth', 'mobileNo', 'CustomerType','customerTitle',];
 
-    switch (true) {
-        // Check if any of the required fields are empty
-        case fieldsToValidate.some((field) => !formData[field]):
-            fieldsToValidate.forEach((field) => {
-                if (!formData[field]) {
-                    isValid = false;
-                    newErrors.field = 'All Field is Required';
-                }
-            });
-            break;
-        // Validate mobile number format
-        case !/^\d{10}$/.test(formData.mobileNo):
-            isValid = false;
-            setMobileNo(true);
-            break;
-
-            case ! /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email):
-              isValid = false;
-              setEmailData(true);
-              console.log(emailData)
-              break;
-        // Validate Aadhar number format
-        // case !/^\d{12}$/.test(formData.aadharNo):
-        //     isValid = false;
-        //     setaadharNo(true);
-        //     break;
-        // Validate PAN card format
-        // case !/^[A-Z]{5}\d{4}[A-Z]$/.test(formData.panCard):
-        //     isValid = false;
-        //     setPanCard(true);
-        //     break;
-
-        case formData.CustomerType === 'ExistingCustomer' && !purchaseChecked && !chitChecked && !tcschecked && !scmchecked:
+  switch (true) {
+      // Check if any of the required fields are empty
+      case fieldsToValidate.some((field) => !formData[field]):
+          fieldsToValidate.forEach((field) => {
+              if (!formData[field]) {
+                  isValid = false;
+                  newErrors.field = 'All Field is Required';
+              }
+          });
+          break;
+      // Validate mobile number format
+      case !/^\d{10}$/.test(formData.mobileNo):
           isValid = false;
-          newErrors.field = 'Please select at least one option';
-          newErrors.field = 'Please select at least one option';
-          newErrors.field = 'Please select at least one option';
-          newErrors.field = 'Please select at least one option';
+          setMobileNo(true);
           break;
 
-        default:
+          case ! /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email):
+            isValid = false;
+            setEmailData(true);
+            console.log(emailData)
             break;
-    }
+      // Validate Aadhar number format
+      // case !/^\d{12}$/.test(formData.aadharNo):
+      //     isValid = false;
+      //     setaadharNo(true);
+      //     break;
+      // Validate PAN card format
+      // case !/^[A-Z]{5}\d{4}[A-Z]$/.test(formData.panCard):
+      //     isValid = false;
+      //     setPanCard(true);
+      //     break;
 
-    // Set the errors state based on validation results
-    setErrors(newErrors);
+      case formData.CustomerType === 'ExistingCustomer' && !purchaseChecked && !chitChecked && !tcschecked && !scmchecked:
+        isValid = false;
+        newErrors.field = 'Please select at least one option';
+        newErrors.field = 'Please select at least one option';
+        newErrors.field = 'Please select at least one option';
+        newErrors.field = 'Please select at least one option';
+        break;
 
-    return isValid;
+      default:
+          break;
+  }
+
+  // Set the errors state based on validation results
+  setErrors(newErrors);
+
+  return isValid;
 };
+
 
 const handleNext = async () => { // Make the function async
   setErrors({});
@@ -148,8 +148,8 @@ const handleNext = async () => { // Make the function async
     }
 
     // Fetch existing user data
-    // const existingUser = await axios.get(`https://cust.spacetextiles.net/check_user/${formData.mobileNo}`);
-    // console.log(existingUser);
+    const existingUser = await axios.get(`https://cctest.spacetextiles.net/check_user/${formData.mobileNo}`);
+    console.log(existingUser);
 
     // Check pin code validity
     if (step === 2 && !/^\d{6}$/.test(formData.pinCode)) {
@@ -163,6 +163,7 @@ const handleNext = async () => { // Make the function async
 
       // Save form data to local storage
       saveFormData(formData);
+
   } catch (error) {
     console.error('Error checking user:', error);
     // Handle any errors that occur during the submission process
@@ -206,15 +207,16 @@ const handleNext = async () => { // Make the function async
   const [scmchecked, setscmchecked] = useState(false);
   const [emailData,setEmailData]=useState(false);
   const [check, setCheck] = useState(false);
+  const [timer, setTimer] = useState(0); // Initial timer value in seconds
+  const [otpSent, setOtpSent] = useState(false);
   const [selectedOption, setSelectedOption] = useState(localStorage.getItem('selectedOption'));
   const [mbno, setMBNo] = useState('');
   const inputRef = {
     customerName:useRef(null),
     email: useRef(null),
-    ProfessionalType: useRef(null),
-    Professional: useRef(null),
     dateOfBirth:useRef(null),
     mobileNo: useRef(null),
+    Professional: useRef(null),
     doorNo: useRef(null),
     street: useRef(null),
     area: useRef(null),
@@ -257,7 +259,6 @@ const handleNext = async () => { // Make the function async
       setChitChecked(false); // Set the state of chit checkbox
     }
   }, [formData.CustomerType]);
-
 
   useEffect(() => {
     // Load form data from localStorage when component mounts
@@ -324,6 +325,39 @@ const handleNext = async () => { // Make the function async
     localStorage.setItem('selectedOption', selectedOption);
   }, [selectedOption]);
 
+  useEffect(() => {
+    let interval;
+    if (otpSent && timer > 0) {
+      // Decrease timer every second
+      interval = setInterval(() => {
+        setTimer(prevTimer => prevTimer - 1);
+      }, 1000);
+    } else if (timer === 0 && otpSent) {
+      // Reset timer and allow OTP resend
+      setOtpSent(false);
+    }
+    
+    // Clean up timer interval on component unmount
+    return () => clearInterval(interval);
+  }, [otpSent, timer]);
+  
+  const handleResendOtp = async () => {
+    await axios.get(`https://cust.spacetextiles.net/resend1/${mbno}`); 
+    setOtpSent(true);
+    setTimer(60); // Reset timer to 10 seconds
+  };
+  
+  useEffect(() => {
+    // Initially set otpSent to false
+    setOtpSent(false);
+    
+    // After 60 seconds, set otpSent to true
+    const timerId = setTimeout(() => {
+      setOtpSent(true);
+    }, 60000);
+  
+    return () => clearTimeout(timerId);
+  }, []);
   // const handledatechange = (date) => {
   //   setDateOfBirth(date);
   //   if (date) {
@@ -415,18 +449,6 @@ const handleNext = async () => { // Make the function async
     { value: "ExistingCustomer", label: "Existing Customer" },
   ];
 
-  // const options2 = [
-  //   { value: "Yes", label: "Yes",},
-  //   { value: "No", label: "No" },
-  // ];
-
-  const options3 = [
-    { value: "Pongal/Sankrati/Diwali", label: "Pongal/Sankrati/Diwali" },
-    { value: "Christmas", label: "Christmas" },
-    { value: "RamadanEid", label: "Ramadan/Eid" },
-    { value: "Onam", label: "Onam" },
-  ];
-
   const options4 = [
     { value: "Architects", label: "Architects" },
     { value: "Marketing careers", label: "Marketing careers" },
@@ -435,15 +457,22 @@ const handleNext = async () => { // Make the function async
     { value: "Lawyer", label: "Lawyer" },
     { value: "Business", label: "Business" },
     { value: "Agriculture", label: "Agriculture" },
-    { value: "Teacher/Proffessor", label: "Teacher/Proffessor" },
+    { value: "Accountant", label: "Accountant" },
     { value: "Others", label: "Others" },
   ];
+
+  const options3 = [
+    { value: "Pongal/Sankrati/Diwali", label: "Pongal/Sankrati/Diwali" },
+    { value: "Christmas", label: "Christmas" },
+    { value: "RamadanEid", label: "Ramadan/Eid" },
+    { value: "Onam", label: "Onam" },
+  ];
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(formData)
-      const res = await axios.post('http://localhost:3000/customer', formData);
+      const res = await axios.post('https://cust.spacetextiles.net/post', formData);
       console.log(res.data);
       setIsSuccess(true);
       setMBNo(res.data.mobileNo);
@@ -480,8 +509,9 @@ const handleNext = async () => { // Make the function async
         customerName: '',
         email: '',
         dateOfBirth: '',
-        //GSTN: '',
+        GSTN: '',
         mobileNo: '',
+        Professional: '',
        // panCard: '',
        // aadharNo: '',
         doorNo: '',
@@ -556,10 +586,22 @@ const handleNext = async () => { // Make the function async
                 type="text"
                 value={formData.enterotp}
                 onChange={handleChange}
-                maxLength={6}
                 placeholder="Referral Code..."
                 className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:border-blue-500"
             />
+            {timer === 0 ? (
+        <>
+          {!otpSent && <button onClick={handleResendOtp} className="block button-left text-blue-600 font-semibold py-2 px-2"style={{ fontSize: '13px' }}>Resend OTP</button>}
+        </>
+      ) : (
+        <>
+          
+            <div>
+              Resend OTP in {timer} Sec
+            </div>
+          
+        </>
+      )}
             <button onClick={handleVerify} className="bg-violet-500 text-white font-bold py-2 px-4 rounded-lg mt-2 ">Verify</button>
             {popup &&<div className="text-green-500 font-semi-bold"style={{ fontSize: '12px' }}>Refferal Code Verified Successfully</div>}
             {otp &&<div className="text-red-500 font-semi-bold"style={{ fontSize: '12px' }}>Invalid Refferal Code</div>}
@@ -584,7 +626,7 @@ const handleNext = async () => { // Make the function async
 
   const handleVerify = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/verify_otp/${formData.otp}`);
+      const response = await axios.get(`https://cctest.spacetextiles.net/verify_otp/${formData.otp}`);
     console.log(response)
       if (response.status === 200) {
         // OTP verification successful
@@ -635,11 +677,6 @@ const handleChange3 = (e, customerTitle) => {
   });
 };
 
-// const handleChange4 = (e, ProfessionalType) => {
-//   setFormData({ ...formData, [ProfessionalType]: e.target.value });
-// };
-
-
 function getCurrentDate() {
   const today = new Date();
   let month = (today.getMonth() + 1).toString();
@@ -653,7 +690,6 @@ function getCurrentDate() {
 
   return `${year}-${month}-${day}`;
 }
-
 
 // Function to handle changes in the Purchase checkbox
 const handlePurchaseChange = () => {
@@ -698,14 +734,6 @@ const handlescmChange = () => {
   const scmValue = updatedScmChecked ? 'Yes' : 'No'; // Set to 'Yes' if checked, 'No' if unchecked
   setFormData({ ...formData, scm_carments: scmValue });
 };
-
-// Function to handle changes in the radio buttons
-// const handleOptionChange = (optionValue) => {
-//   // Update the selectedOption state with the new value
-//   setSelectedOption(optionValue);
-//   // Update the formData state with the selected option value
-//   setFormData({ ...formData, ProfessionalType: optionValue });
-// };
 
 
 const handleKeypress = (e, nextRef) => {
@@ -773,7 +801,7 @@ useEffect(() => {
             <form onSubmit={handleSubmit}>
               {step === 1 && (
                 <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-2">
-<div className="md:col-span-2">
+              <div className="md:col-span-2">
   <label htmlFor="customerName" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Customer Name</label>
   <div className="flex">
     <select
@@ -864,11 +892,11 @@ useEffect(() => {
                   <label htmlFor="Professional Type" className="block text-left after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Professional</label>
                   <Select
                   options={options4}
-                  value={options4.find(option => option.value === formData.FestivalCelebrate)}
+                  value={options4.find(option => option.value === formData.Professional)}
                   isSearchable={false}
-                  onChange={(selectedOption) => handleChange({ target: { name: "FestivalCelebrate", value: selectedOption.value } })}
-                  onKeyDown={(e) => handleKeypress(e, inputRef.dateOfBirth)} // Pass the reference to the next input field to handleKeypress function
-                  ref={inputRef.FestivalCelebrate}
+                  onChange={(selectedOption) => handleChange({ target: { name: "Professional", value: selectedOption.value } })}
+                  onKeyDown={(e) => handleKeypress(e, inputRef.CustomerType)} // Pass the reference to the next input field to handleKeypress function
+                  ref={inputRef.Professional}
                   className="select-container h-10 border mt-1 rounded  px-0 w-full bg-gray-50 " // Add a custom class for styling
                   classNamePrefix="select" // Prefix for inner components' class names
                   />
@@ -1106,6 +1134,7 @@ useEffect(() => {
                     id="weddingDate"
                     value={formData.weddingDate}
                     onChange={handleDate1Change}
+                    max={getCurrentDate()}
                     onKeyDown={(e) => handleKeypress(e, inputRef.SpouseName)} // Pass the reference to the next input field to handleKeypress function
                     ref={inputRef.weddingDate}
                     className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
@@ -1159,6 +1188,7 @@ useEffect(() => {
                     id="spousebirthday"
                     value={formData.SpouseBirthday}
                     onChange={(sod)=>handleDate2Change(sod)}
+                    max={getCurrentDate()}
                     onKeyDown={(e) => handleKeypress(e, inputRef.FirstChildName)} // Pass the reference to the next input field to handleKeypress function
                     ref={inputRef.SpouseBirthday}
                     className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
@@ -1214,6 +1244,7 @@ useEffect(() => {
                   id="firstChildBirthday"
                   value={formData.FirstChildBirthday}
                     onChange={handleDate3Change}
+                    max={getCurrentDate()}
                     onKeyDown={(e) => handleKeypress(e, inputRef.SecondChildName)} // Pass the reference to the next input field to handleKeypress function
                     ref={inputRef.FirstChildBirthday}
                     className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
@@ -1268,6 +1299,7 @@ useEffect(() => {
                   id="secondChildBirthday"
                   value={formData.SecondChildBirthday}
                     onChange={handleDate4Change}
+                    max={getCurrentDate()}
                     onKeyDown={(e) => handleKeypress(e, inputRef.FestivalCelebrate)} // Pass the reference to the next input field to handleKeypress function
                     ref={inputRef.SecondChildBirthday}
                     className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
